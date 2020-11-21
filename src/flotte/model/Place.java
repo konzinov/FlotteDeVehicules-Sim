@@ -1,73 +1,61 @@
 package flotte.model;
 
-public class Place extends Thread{
-private int numPlace;
-private Point localisation;
-private boolean statut = true;
+public class Place extends Thread {
+	private int numPlace;
 
-public Place(int n, Point nP){
-	localisation = new Point(nP.getLibPoint(), nP.getX(), nP.getY());
-	numPlace = n;
-}
+	private Point localisation;
 
-public Place() {
-	super();
-}
+	private boolean statut = true;
 
-public int getNumPlace() {
-	return numPlace;
-}
+	public Place(int n, Point nP) {
+		localisation = new Point(nP.getLibPoint(), nP.getX(), nP.getY());
+		numPlace = n;
+	}
 
-public void setNumPlace(int numPlace) {
-	this.numPlace = numPlace;
-}
+	public Place() {
+		super();
+	}
 
-public Point getLocalisation() {
-	return localisation;
-}
+	public int getNumPlace() {
+		return numPlace;
+	}
 
-public void setLocalisation(Point localisation) {
-	this.localisation = localisation;
-}
+	public void setNumPlace(int numPlace) {
+		this.numPlace = numPlace;
+	}
 
-public boolean isStatut() {
-	return statut;
-}
+	public Point getLocalisation() {
+		return localisation;
+	}
 
-public void setStatut(boolean statut) {
-	this.statut = statut;
-}
+	public void setLocalisation(Point localisation) {
+		this.localisation = localisation;
+	}
 
-public synchronized void reserver() throws InterruptedException{
+	public boolean isStatut() {
+		return statut;
+	}
 
-/*	if(statut){
+	public void setStatut(boolean statut) {
+		this.statut = statut;
+	}
+
+	public synchronized void reserver() throws InterruptedException {
+		while (!statut) {
+			wait();
+		}
 		statut = false;
-		sleep(1000);
+		Thread.sleep(1000);
 	}
-	else{
-		wait();
-	}
-*/
-	while(!statut){
-		wait();
-	}
-	statut = false;
-	Thread.sleep(1000);
-}
 
-public synchronized void liberer(){
-	
+	public synchronized void liberer() {
 		statut = true;
 		notifyAll();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-	
-}
+	}
 
 }

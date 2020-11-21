@@ -2,13 +2,11 @@ package flotte.model;
 
 public class Entree extends Place {
 	private int numEntree;
+
 	private String libEntree;
-    public static int nbPassagerAtt;
-    
-    
 
 	public Entree() {
-		super();
+
 	}
 
 	public Entree(int n, Point nP, int numEntree, String libEntree) {
@@ -31,11 +29,10 @@ public class Entree extends Place {
 
 	public void setLibEntree(String libEntree) {
 		this.libEntree = libEntree;
-	} 
-	
+	}
+
 	@Override
-	public String toString(){
-	//	return this.getLocalisation().getX()+" "+ this.getLocalisation().getY();
+	public String toString() {
 		return this.libEntree;
 	}
 

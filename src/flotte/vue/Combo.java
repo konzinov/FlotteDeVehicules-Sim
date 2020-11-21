@@ -1,22 +1,28 @@
 package flotte.vue;
 
+import flotte.model.Anneau;
+import flotte.model.Entree;
+import flotte.model.Sortie;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
-import flotte.model.*;
-
 public class Combo {
 	public static DefaultComboBoxModel<Entree> comboEntree;
+
 	public static DefaultComboBoxModel<Sortie> comboSortie;
-	static List<Entree> entrees = new ArrayList<Entree>();
-	static List<Sortie> sorties = new ArrayList<Sortie>();
-	public static Carte clo = new Carte(1000,800);
+
+	static List<Entree> entrees = new ArrayList<>();
+
+	static List<Sortie> sorties = new ArrayList<>();
+
+	public static Carte clo = new Carte(1000, 800);
+
 	public static DefaultComboBoxModel<Entree> getComboEntree() {
-		
+
 		comboEntree = new DefaultComboBoxModel<Entree>();
 		entrees.add(clo.e1);
 		entrees.add(clo.e2);
@@ -24,15 +30,17 @@ public class Combo {
 		entrees.add(clo.e4);
 		entrees.add(clo.e5);
 		entrees.add(clo.e6);
-	
-		for(Entree entree : entrees){
+
+		for (Entree entree : entrees) {
 			comboEntree.addElement(entree);
 		}
 		return comboEntree;
 	}
+
 	public static void setComboEntree(DefaultComboBoxModel<Entree> comboEntree) {
 		Combo.comboEntree = comboEntree;
 	}
+
 	public static DefaultComboBoxModel<Sortie> getComboSortie() {
 		comboSortie = new DefaultComboBoxModel<Sortie>();
 		sorties.add(clo.s1);
@@ -41,16 +49,18 @@ public class Combo {
 		sorties.add(clo.s4);
 		sorties.add(clo.s5);
 		sorties.add(clo.s6);
-		for(Sortie sortie : sorties){
+		for (Sortie sortie : sorties) {
 			comboSortie.addElement(sortie);
 		}
 		return comboSortie;
 	}
+
 	public static void setComboSortie(DefaultComboBoxModel<Sortie> comboSortie) {
 		Combo.comboSortie = comboSortie;
 	}
-	
+
 	public static List<Anneau> anneaux = new ArrayList<Anneau>();
+
 	public static List<Anneau> getAnneaux() {
 		anneaux.add(clo.a0);
 		anneaux.add(clo.a1);
@@ -61,25 +71,28 @@ public class Combo {
 		anneaux.add(clo.a6);
 		return anneaux;
 	}
+
 	public static void setAnneaux(List<Anneau> anneaux) {
 		Combo.anneaux = anneaux;
 	}
-	
+
 	public static TableModel demandes;
+
 	public static TableModel getDemandes() {
-		Object[][] colonnes={
-			{null,null,null},
-			{null,null,null},
-			{null,null,null}
-			
+		Object[][] colonnes = {
+				{null, null, null},
+				{null, null, null},
+				{null, null, null}
+
 		};
-		String entete[] = {"NOM","ENTREE","SORTIE"};
+		String entete[] = {"NOM", "ENTREE", "SORTIE"};
 		demandes = new DefaultTableModel(colonnes, entete);
 		return demandes;
 	}
+
 	public static void setDemandes(DefaultTableModel demandes) {
 		Combo.demandes = demandes;
 	}
-	
-	 
+
+
 }

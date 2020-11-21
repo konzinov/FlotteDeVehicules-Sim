@@ -1,5 +1,8 @@
 bin/
+out/
 .settings/
+.idea/
 .classpath
 .project
 .DS_Store
+*.iml

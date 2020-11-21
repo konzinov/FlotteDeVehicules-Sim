@@ -1,10 +1,10 @@
 package flotte.model;
 
-public class Sortie extends Place{
+public class Sortie extends Place {
 	private int numSortie;
+
 	private String libSortie;
-	
-	
+
 	public Sortie() {
 		super();
 	}
@@ -30,9 +30,9 @@ public class Sortie extends Place{
 	public void setLibSortie(String libSortie) {
 		this.libSortie = libSortie;
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		//return this.getLocalisation().getX()+" "+ this.getLocalisation().getY();
 		return this.libSortie;
 	}
