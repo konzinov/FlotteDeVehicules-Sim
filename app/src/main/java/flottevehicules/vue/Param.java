@@ -1,7 +1,6 @@
 package flottevehicules.vue;
 
 
-
 import flottevehicules.model.Boite;
 import flottevehicules.model.Controlleur;
 import flottevehicules.model.Demande;
@@ -13,8 +12,11 @@ import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +26,18 @@ public class Param extends javax.swing.JPanel {
 
 	public Param() {
 		initComponents();
-		entree.setModel(Combo.initEntreesCombo());
-		sortie.setModel(Combo.initSortiesCombo());
+		entreesComboBox.setModel(Combo.initEntreesCombo());
+		sortiesCombox.setModel(Combo.initSortiesCombo());
 		this.viderChamp();
+		this.buildTableDemandes();
 	}
 
 	private void initComponents() {
 		jLabel1 = new JLabel();
 		jLabel2 = new JLabel();
 		jLabel3 = new JLabel();
-		entree = new JComboBox<>();
-		sortie = new JComboBox<>();
+		entreesComboBox = new JComboBox<>();
+		sortiesCombox = new JComboBox<>();
 		jScrollPane2 = new JScrollPane();
 
 		tableDemandes = new javax.swing.JTable() {
@@ -44,32 +47,16 @@ public class Param extends javax.swing.JPanel {
 			}
 		};
 
-		ajouterDemandeButton = new JButton("Ajouter", iconOf("add.png"));
-		ajouterDemandeButton.addActionListener(actionEvent -> {
-			if (entree.getSelectedIndex() == -1 || sortie.getSelectedIndex() == -1) {
-				JOptionPane.showMessageDialog(this, "Veuillez renseigner tous les parametres");
-			} else {
-				synchronized (demandes) {
-					demandes.add(new Demande(nom.getText(), (Entree) entree.getItemAt(entree.getSelectedIndex()), (Sortie) sortie.getItemAt(sortie.getSelectedIndex()), false));
-					viderChamp();
-				}
-			}
-		});
+		tableDemandes = new JTable();
 
-		modifierDemandeButton = new javax.swing.JButton();
-		modifierDemandeButton.setIcon(new ImageIcon("/home/emmanuel/workspace/FlotteDeVehicules/application_edit.png"));
-		jButton3 = new javax.swing.JButton();
-		jButton3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (tableDemandes.getSelectedRow() == -1) {
-					JOptionPane.showMessageDialog(null, "Veuillez selectionner une ligne");
-				} else {
-					demandes.remove(tableDemandes.getSelectedRow());
-					viderChamp();
-				}
-			}
-		});
-		jButton3.setIcon(new ImageIcon("/home/emmanuel/workspace/FlotteDeVehicules/delete.png"));
+		ajouterDemandeButton = new JButton("Ajouter", iconOf("add.png"));
+		ajouterDemandeButton.addActionListener(this::ajouterDemandeHandler);
+
+		modifierDemandeButton = new JButton("Modifier", iconOf("application_edit.png"));
+		modifierDemandeButton.addActionListener(this::modifierDemandeHandler);
+
+		supprimerDemandeButton = new JButton("Supprimer", iconOf("delete.png"));
+		supprimerDemandeButton.addActionListener(this::supprimerDemndeHandler);
 
 
 		jLabel1.setText("Nom");
@@ -78,50 +65,25 @@ public class Param extends javax.swing.JPanel {
 
 		jLabel3.setText("Sortie");
 
-		entree.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
+		entreesComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
 
-		sortie.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
+		sortiesCombox.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
 
-		tableDemandes.setModel(new javax.swing.table.DefaultTableModel(
-				new Object[][]{
-						{null, null, null, null},
-						{null, null, null, null},
-						{null, null, null, null},
-						{null, null, null, null}
-				},
-				new String[]{
-						"Title 1", "Title 2", "Title 3", "Title 4"
-				}
-		));
+		JTableHeader header = tableDemandes.getTableHeader();
+		header.setReorderingAllowed(false);
+		header.setBackground(Color.white);
+
 		jScrollPane2.setViewportView(tableDemandes);
 
-		//  jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/flotte/vue/application_edit.png"))); // NOI18N
-		modifierDemandeButton.setText("Modifier");
-		modifierDemandeButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if (tableDemandes.getSelectedRow() == -1) {
-					JOptionPane.showMessageDialog(null, "Veuillez selectionner une ligne");
-				} else {
 
-					demandes.get(tableDemandes.getSelectedRow()).setE((Entree) entree.getItemAt(entree.getSelectedIndex()));
-					demandes.get(tableDemandes.getSelectedRow()).setS((Sortie) sortie.getItemAt(sortie.getSelectedIndex()));
-					demandes.get(tableDemandes.getSelectedRow()).setNom(nom.getText());
-					viderChamp();
-				}
-			}
-		});
 
 		//jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/flotte/vue/delete.png"))); // NOI18N
-		jButton3.setText("Supprimer");
+		supprimerDemandeButton.setText("Supprimer");
 
 		nom = new JTextField();
 		nom.setColumns(10);
 
 		tableDemandes.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				tableDemandesMouseClicked(evt);
-			}
-
 			public void mousePressed(java.awt.event.MouseEvent evt) {
 				tableDemandesMousePressed(evt);
 			}
@@ -216,13 +178,13 @@ public class Param extends javax.swing.JPanel {
 																.addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
 																.addPreferredGap(ComponentPlacement.UNRELATED)))
 												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addComponent(entree, 0, 186, Short.MAX_VALUE)
+														.addComponent(entreesComboBox, 0, 186, Short.MAX_VALUE)
 														.addComponent(nom, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-														.addComponent(sortie, Alignment.TRAILING, 0, 186, Short.MAX_VALUE))
+														.addComponent(sortiesCombox, Alignment.TRAILING, 0, 186, Short.MAX_VALUE))
 												.addGap(56)
 												.addGroup(layout.createParallelGroup(Alignment.LEADING)
 														.addComponent(modifierDemandeButton, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
-														.addComponent(jButton3, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+														.addComponent(supprimerDemandeButton, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
 														.addComponent(ajouterDemandeButton, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
 														.addComponent(btnNouveau))
 												.addGap(61))
@@ -264,18 +226,18 @@ public class Param extends javax.swing.JPanel {
 												.addPreferredGap(ComponentPlacement.UNRELATED)
 												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 														.addComponent(jLabel2)
-														.addComponent(entree, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)))
+														.addComponent(entreesComboBox, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)))
 										.addGroup(layout.createSequentialGroup()
 												.addComponent(btnNouveau)
 												.addGap(18)
 												.addComponent(ajouterDemandeButton)))
 								.addPreferredGap(ComponentPlacement.UNRELATED)
 								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-										.addComponent(sortie, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addComponent(sortiesCombox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 										.addComponent(jLabel3)
 										.addComponent(modifierDemandeButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
 								.addGap(18)
-								.addComponent(jButton3)
+								.addComponent(supprimerDemandeButton)
 								.addGap(36)
 								.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
 										.addGroup(layout.createSequentialGroup()
@@ -309,59 +271,94 @@ public class Param extends javax.swing.JPanel {
 		this.setLayout(layout);
 	}
 
+	private void buildTableDemandes() {
+		final String[] entetes = {"NOM", "ENTREE", "SORTIE"};
+		tableDemandesModel = new DefaultTableModel(entetes, 0);
+
+		tableDemandes.setModel(tableDemandesModel);
+		for (final Demande demande : demandes) {
+			tableDemandesModel.addRow(new Object[]{demande.getNom(), demande.getE().getLibEntree(), demande.getS().getLibSortie()});
+		}
+	}
+
+	private void ajouterDemandeHandler(ActionEvent actionEvent) {
+		if (entreesComboBox.getSelectedIndex() == -1 || sortiesCombox.getSelectedIndex() == -1) {
+			JOptionPane.showMessageDialog(this, "Veuillez renseigner tous les parametres");
+		} else {
+			synchronized (demandes) {
+				demandes.add(new Demande(nom.getText(), (Entree) entreesComboBox.getItemAt(entreesComboBox.getSelectedIndex()), (Sortie) sortiesCombox.getItemAt(sortiesCombox.getSelectedIndex()), false));
+				this.viderChamp();
+				this.buildTableDemandes();
+			}
+		}
+	}
+
+	public void modifierDemandeHandler(ActionEvent actionEvent) {
+		final int selectedRowIndex = tableDemandes.getSelectedRow();
+
+		if (selectedRowIndex == -1) {
+			JOptionPane.showMessageDialog(this, "Veuillez selectionner une ligne");
+		} else {
+			demandes.get(selectedRowIndex).setE(entreesComboBox.getItemAt(entreesComboBox.getSelectedIndex()));
+			demandes.get(selectedRowIndex).setS(sortiesCombox.getItemAt(sortiesCombox.getSelectedIndex()));
+			demandes.get(selectedRowIndex).setNom(nom.getText());
+			this.viderChamp();
+			this.buildTableDemandes();
+		}
+	}
+
+	public void supprimerDemndeHandler(ActionEvent actionEvent) {
+		if (tableDemandes.getSelectedRow() == -1) {
+			JOptionPane.showMessageDialog(null, "Veuillez selectionner une ligne");
+		} else {
+			demandes.remove(tableDemandes.getSelectedRow());
+			viderChamp();
+			buildTableDemandes();
+		}
+	}
 
 	public void viderChamp() {
-
-		entree.setSelectedIndex(-1);
-		sortie.setSelectedIndex(-1);
+		entreesComboBox.setSelectedIndex(-1);
+		sortiesCombox.setSelectedIndex(-1);
 		nom.setText(null);
-		model = new DefaultTableModel();
-		Object entete[] = {"NOM", "ENTREE", "SORTIE"};
-		model.addColumn("NOM");
-		model.addColumn("ENTREE");
-		model.addColumn("SORTIE");
-		//demandes = new ArrayList<Demande>();
-		for (int i = 0; i < demandes.size(); i++) {
-			model.addRow(new Object[]{demandes.get(i).getNom(), demandes.get(i).getE().getLibEntree(), demandes.get(i).getS().getLibSortie()});
-		}
-		tableDemandes.setModel(model);
-
 	}
 
-	private void tableDemandesMouseClicked(java.awt.event.MouseEvent evt) {
-
-	}
-
-	private void tableDemandesMousePressed(java.awt.event.MouseEvent evt) {
+	private void tableDemandesMousePressed(java.awt.event.MouseEvent event) {
 		nom.setText(tableDemandes.getValueAt(tableDemandes.getSelectedRow(), 0).toString());
-		for (int i = 0; i < entree.getItemCount(); i++) {
-			selectedE = (Entree) entree.getItemAt(i);
-			if (selectedE.getLibEntree().equals(tableDemandes.getValueAt(tableDemandes.getSelectedRow(), 1).toString())) {
-				entree.setSelectedIndex(i);
+
+		for (int i = 0; i < entreesComboBox.getItemCount(); i++) {
+			entreeSelectionnee = (Entree) entreesComboBox.getItemAt(i);
+			if (entreeSelectionnee.getLibEntree().equals(tableDemandes.getValueAt(tableDemandes.getSelectedRow(), 1).toString())) {
+				entreesComboBox.setSelectedIndex(i);
 			}
 		}
 
-		for (int i = 0; i < sortie.getItemCount(); i++) {
-			selectedS = (Sortie) sortie.getItemAt(i);
-			if (selectedS.getLibSortie().equals(tableDemandes.getValueAt(tableDemandes.getSelectedRow(), 2).toString())) {
-				sortie.setSelectedIndex(i);
+		for (int i = 0; i < sortiesCombox.getItemCount(); i++) {
+			sortieSelectionnee = (Sortie) sortiesCombox.getItemAt(i);
+			if (sortieSelectionnee.getLibSortie().equals(tableDemandes.getValueAt(tableDemandes.getSelectedRow(), 2).toString())) {
+				sortiesCombox.setSelectedIndex(i);
 			}
 		}
 	}
 
 	private Icon iconOf(final String iconName) {
-		return new ImageIcon(Paths.get("src", "resources", iconName).toString());
+		try {
+			return new ImageIcon(Paths.get(getClass().getResource("/" + iconName).toURI()).toString());
+		} catch (URISyntaxException exception) {
+			return null;
+		}
+
 	}
 
 	private JButton ajouterDemandeButton;
 
 	private JButton modifierDemandeButton;
 
-	private JButton jButton3;
+	private JButton supprimerDemandeButton;
 
-	private JComboBox<Entree> entree = new JComboBox<>();
+	private JComboBox<Entree> entreesComboBox = new JComboBox<>();
 
-	private JComboBox<Sortie> sortie = new JComboBox<>();
+	private JComboBox<Sortie> sortiesCombox = new JComboBox<>();
 
 	private JLabel jLabel1;
 
@@ -375,13 +372,13 @@ public class Param extends javax.swing.JPanel {
 
 	private JTextField nom;
 
-	public static List<Demande> demandes = new ArrayList<>();
+	public static final List<Demande> demandes = new ArrayList<>();
 
-	DefaultTableModel model = new DefaultTableModel();
+	DefaultTableModel tableDemandesModel = new DefaultTableModel();
 
-	Entree selectedE = new Entree();
+	Entree entreeSelectionnee = new Entree();
 
-	Sortie selectedS = new Sortie();
+	Sortie sortieSelectionnee = new Sortie();
 
 	private JButton pauseButton;
 
@@ -393,5 +390,5 @@ public class Param extends javax.swing.JPanel {
 
 	public static JLabel vLibre;
 
-	private Controlleur controlleur = new Controlleur();
+	private final Controlleur controlleur = new Controlleur();
 }
