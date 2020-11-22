@@ -1,4 +1,4 @@
-package flotte.vue;
+package flottevehicules.vue;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +20,5 @@ public class Menu extends JFrame {
 		setVisible(true);
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
-	public static void main(String argv[]) {
-		new Menu();
 	}
 }

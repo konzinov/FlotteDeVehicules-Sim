@@ -1,7 +1,7 @@
-package flotte.model;
+package flottevehicules.model;
 
-import flotte.vue.Combo;
-import flotte.vue.Menu;
+import flottevehicules.vue.Combo;
+import flottevehicules.vue.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,12 +81,12 @@ public class Vehicule implements Runnable {
 
 	public void calculerCourtChemin(Entree e, Sortie s) {
 
-		Combo.getAnneaux();
-		if (Math.abs(s.getNumSortie() - e.getNumEntree()) == 3) {
+//		Combo.getAnneaux();
+			if (Math.abs(s.getNumSortie() - e.getNumEntree()) == 3) {
 			trajet.getTrajet().add(e);
-			trajet.getTrajet().add(Combo.anneaux.get(e.getNumPlace() - 6));
-			trajet.getTrajet().add(Combo.clo.a0);
-			trajet.getTrajet().add(Combo.anneaux.get(s.getNumPlace() - 12));
+			trajet.getTrajet().add(Combo.getAnneaux().get(e.getNumPlace() - 6));
+			trajet.getTrajet().add(Combo.carte.getA0());
+			trajet.getTrajet().add(Combo.getAnneaux().get(s.getNumPlace() - 12));
 			trajet.getTrajet().add(s);
 		} else {
 			int cpt1 = Math.abs(e.getNumEntree() - s.getNumSortie()) + 1;
@@ -95,12 +95,12 @@ public class Vehicule implements Runnable {
 				trajet.getTrajet().add(e);
 				if (s.getNumSortie() > e.getNumEntree()) {
 					for (int i = e.getNumEntree(); i <= s.getNumSortie(); i++) {
-						trajet.getTrajet().add(Combo.anneaux.get(i));
+						trajet.getTrajet().add(Combo.getAnneaux().get(i));
 					}
 
 				} else {
 					for (int i = e.getNumEntree(); i >= s.getNumSortie(); i--) {
-						trajet.getTrajet().add(Combo.anneaux.get(i));
+						trajet.getTrajet().add(Combo.getAnneaux().get(i));
 					}
 				}
 				trajet.getTrajet().add(s);
@@ -108,20 +108,20 @@ public class Vehicule implements Runnable {
 				trajet.getTrajet().add(e);
 				if (s.getNumSortie() > e.getNumEntree()) {
 					for (int i = e.getNumEntree(); i >= 1; i--) {
-						trajet.getTrajet().add(Combo.anneaux.get(i));
+						trajet.getTrajet().add(Combo.getAnneaux().get(i));
 					}
 					for (int i = 6; i >= s.getNumSortie(); i--) {
-						trajet.getTrajet().add(Combo.anneaux.get(i));
+						trajet.getTrajet().add(Combo.getAnneaux().get(i));
 					}
 
 
 				} else {
 
 					for (int i = e.getNumEntree(); i <= 6; i++) {
-						trajet.getTrajet().add(Combo.anneaux.get(i));
+						trajet.getTrajet().add(Combo.getAnneaux().get(i));
 					}
 					for (int i = 1; i <= s.getNumSortie(); i++) {
-						trajet.getTrajet().add(Combo.anneaux.get(i));
+						trajet.getTrajet().add(Combo.getAnneaux().get(i));
 					}
 				}
 				trajet.getTrajet().add(s);

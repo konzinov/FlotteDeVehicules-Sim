@@ -1,4 +1,4 @@
-package flotte.model;
+package flottevehicules.model;
 
 import java.awt.geom.Point2D;
 

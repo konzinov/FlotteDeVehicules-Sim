@@ -1,6 +1,6 @@
-package flotte.model;
+package flottevehicules.model;
 
-import flotte.vue.Param;
+import flottevehicules.vue.Param;
 
 public class Boite extends Thread {
 

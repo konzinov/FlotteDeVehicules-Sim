@@ -1,6 +1,6 @@
-package flotte.model;
+package flottevehicules.model;
 
-import flotte.vue.Carte;
+import flottevehicules.vue.Carte;
 
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;

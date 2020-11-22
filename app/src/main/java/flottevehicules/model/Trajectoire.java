@@ -1,4 +1,4 @@
-package flotte.model;
+package flottevehicules.model;
 
 
 import java.util.ArrayList;

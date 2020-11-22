@@ -1,4 +1,4 @@
-package flotte.model;
+package flottevehicules.model;
 
 public class Place extends Thread {
 	private int numPlace;
